@@ -1,0 +1,10 @@
+# Schéma GSettings compilé (généré à l'installation)
+**/schemas/gschemas.compiled
+
+# IDE / outils
+.idea/
+.playwright-mcp/
+
+# OS
+*~
+.DS_Store

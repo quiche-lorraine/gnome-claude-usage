@@ -1,0 +1,9 @@
+{
+  "uuid": "claude-usage@quiche-lorraine.github.io",
+  "name": "Claude Usage",
+  "description": "Jauges permanentes de consommation du forfait Claude (fenêtres 5h et 7 jours) avec cadence cible et alertes.",
+  "version": 1,
+  "shell-version": ["46", "47", "48"],
+  "settings-schema": "org.gnome.shell.extensions.claude-usage",
+  "url": "https://github.com/quiche-lorraine/gnome-claude-usage"
+}

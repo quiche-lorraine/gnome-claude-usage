@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.claude-usage"
+          path="/org/gnome/shell/extensions/claude-usage/">
+    <key name="notifications-enabled" type="b">
+      <default>true</default>
+      <summary>Activer les notifications</summary>
+      <description>Affiche une notification GNOME au franchissement des seuils.</description>
+    </key>
+    <key name="threshold-warn" type="i">
+      <range min="1" max="100"/>
+      <default>80</default>
+      <summary>Seuil d'avertissement (%)</summary>
+      <description>Pourcentage à partir duquel la jauge passe en orange.</description>
+    </key>
+    <key name="threshold-critical" type="i">
+      <range min="1" max="100"/>
+      <default>95</default>
+      <summary>Seuil critique (%)</summary>
+      <description>Pourcentage à partir duquel la jauge passe en rouge.</description>
+    </key>
+    <key name="poll-interval" type="i">
+      <range min="30" max="3600"/>
+      <default>180</default>
+      <summary>Intervalle de rafraîchissement (s)</summary>
+      <description>Fréquence d'interrogation de l'endpoint de consommation. L'endpoint applique sa propre limite ; rester ≥ 60 s.</description>
+    </key>
+  </schema>
+</schemalist>
