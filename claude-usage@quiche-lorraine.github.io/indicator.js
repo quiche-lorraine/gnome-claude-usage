@@ -152,24 +152,21 @@ class ClaudeUsageIndicator extends PanelMenu.Button {
         });
     }
 
-    // Color based on pace vs target, with hard red guard near the absolute cap.
+    // Color combines absolute thresholds (warn/crit) with pace vs target;
+    // the worst of the two wins, so high absolute usage always shows even when on pace.
     _colorFor(pct, target) {
         if (pct === null || pct === undefined)
             return COLOR_DIM;
 
-        const crit = this._settings.get_int('threshold-critical');
-        if (pct >= crit)
-            return COLOR_CRIT;
+        let sev = this._levelFor(pct); // 0=ok, 1=warn, 2=crit (absolute thresholds)
 
-        if (target === null || target === undefined || target <= 2) {
-            const warn = this._settings.get_int('threshold-warn');
-            return pct >= warn ? COLOR_WARN : COLOR_OK;
+        if (target !== null && target !== undefined && target > 2) {
+            const ratio = pct / target;
+            const paceSev = ratio >= 2.0 ? 2 : (ratio >= 1.4 ? 1 : 0);
+            sev = Math.max(sev, paceSev);
         }
 
-        const ratio = pct / target;
-        if (ratio >= 2.0) return COLOR_CRIT;
-        if (ratio >= 1.4) return COLOR_WARN;
-        return COLOR_OK;
+        return sev >= 2 ? COLOR_CRIT : (sev >= 1 ? COLOR_WARN : COLOR_OK);
     }
 
     _refresh() {
