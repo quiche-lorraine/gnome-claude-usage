@@ -130,6 +130,10 @@ class ClaudeUsageIndicator extends PanelMenu.Button {
         refreshItem.connect('activate', () => this._refresh());
         this.menu.addMenuItem(refreshItem);
 
+        const loginItem = new PopupMenu.PopupMenuItem('Connexion / Préférences…');
+        loginItem.connect('activate', () => this._extension.openPreferences());
+        this.menu.addMenuItem(loginItem);
+
         const prefsItem = new PopupMenu.PopupMenuItem('Préférences…');
         prefsItem.connect('activate', () => this._extension.openPreferences());
         this.menu.addMenuItem(prefsItem);

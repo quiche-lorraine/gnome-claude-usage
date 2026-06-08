@@ -14,7 +14,6 @@
 # CLAUDE_TRAY_MOCK=1 : données factices (test affichage/alertes), sans cache.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-CRED="$HOME/.claude/.credentials.json"
 ENDPOINT="https://api.anthropic.com/api/oauth/usage"
 CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/gnome-claude-usage"
 CACHE="$CACHE_DIR/usage.json"
@@ -47,8 +46,8 @@ if [ -s "$CACHE" ]; then
   fi
 fi
 
-# --- Token OAuth local (jamais affiché) ---
-TOKEN=$(python3 -c "import json;print(json.load(open('$CRED'))['claudeAiOauth']['accessToken'])" 2>/dev/null)
+# --- Token OAuth (dédié extension + refresh auto, repli CLI) — jamais affiché ---
+TOKEN=$(python3 "$SCRIPT_DIR/resolve-token.py" 2>/dev/null)
 if [ -z "${TOKEN:-}" ]; then
   emit_cache_or_fail "no_token"; exit 0
 fi

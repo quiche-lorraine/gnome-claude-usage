@@ -19,16 +19,20 @@ if [ "${#missing[@]}" -gt 0 ]; then
   exit 1
 fi
 
-if [ ! -f "$HOME/.claude/.credentials.json" ]; then
-  echo "⚠ ~/.claude/.credentials.json introuvable."
-  echo "  Connectez-vous d'abord dans Claude Code ; les jauges afficheront 'indisponible' sinon."
+OWN_CRED="${XDG_CONFIG_HOME:-$HOME/.config}/gnome-claude-usage/credentials.json"
+NEED_LOGIN=0
+if [ ! -f "$OWN_CRED" ] && [ ! -f "$HOME/.claude/.credentials.json" ]; then
+  NEED_LOGIN=1
+  echo "ℹ Aucun token Claude trouvé (ni login dédié, ni Claude Code CLI)."
+  echo "  Tu pourras connecter l'extension après l'install (voir la fin)."
 fi
 
 # --- Copie ---
 echo "→ Installation dans $EXT_DIR"
 mkdir -p "$EXT_DIR"
 cp -r "$SRC_DIR/." "$EXT_DIR/"
-chmod +x "$EXT_DIR/usage-fetch.sh" "$EXT_DIR/pace.py"
+chmod +x "$EXT_DIR/usage-fetch.sh" "$EXT_DIR/pace.py" \
+         "$EXT_DIR/resolve-token.py" "$EXT_DIR/oauth-login.py"
 
 # --- Schéma GSettings ---
 glib-compile-schemas "$EXT_DIR/schemas"
@@ -64,5 +68,12 @@ else
 fi
 echo "  L'extension s'activera automatiquement au rechargement."
 echo ""
+if [ "$NEED_LOGIN" = "1" ]; then
+  echo "▶ Connecte l'extension à Claude (une fois), via les préférences :"
+  echo "    menu de l'extension → « Connexion / Préférences… » → section Connexion Claude"
+  echo "    (Ouvrir le navigateur → autoriser → coller le code → Valider)"
+  echo "  ou en terminal :  python3 \"$EXT_DIR/oauth-login.py\""
+  echo ""
+fi
 echo "Vérifier : gnome-extensions info $UUID   (attendu : État ACTIVE)"
 echo "Réglages : gnome-extensions prefs $UUID"

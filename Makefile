@@ -7,7 +7,8 @@ SRC := $(UUID)
 install:
 	@mkdir -p "$(EXT_DIR)"
 	@cp -r $(SRC)/. "$(EXT_DIR)/"
-	@chmod +x "$(EXT_DIR)/usage-fetch.sh" "$(EXT_DIR)/pace.py"
+	@chmod +x "$(EXT_DIR)/usage-fetch.sh" "$(EXT_DIR)/pace.py" \
+	          "$(EXT_DIR)/resolve-token.py" "$(EXT_DIR)/oauth-login.py"
 	@glib-compile-schemas "$(EXT_DIR)/schemas"
 	@gnome-extensions enable $(UUID) 2>/dev/null || true
 	@gnome-extensions info $(UUID) 2>/dev/null | grep -q "Activé: Oui" || \
