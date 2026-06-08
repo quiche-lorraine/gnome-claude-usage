@@ -150,11 +150,12 @@ export default class ClaudeUsagePrefs extends ExtensionPreferences {
                     return;
                 }
                 if (data.ok) {
+                    settings.set_uint('last-login', Math.floor(Date.now() / 1000));
                     statusRow.set_subtitle('✓ Login dédié actif');
                     codeEntry.set_text('');
                     codeEntry.set_sensitive(false);
                     validateBtn.set_sensitive(false);
-                    resultLabel.set_label('✓ Connecté — les jauges se mettront à jour bientôt');
+                    resultLabel.set_label('✓ Connecté — les jauges se mettent à jour…');
                 } else {
                     resultLabel.set_label(`✗ ${data.error || 'Erreur inconnue'}`);
                     validateBtn.set_sensitive(true);

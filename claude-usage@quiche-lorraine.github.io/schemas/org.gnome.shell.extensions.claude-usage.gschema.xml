@@ -25,5 +25,10 @@
       <summary>Intervalle de rafraîchissement (s)</summary>
       <description>Fréquence d'interrogation de l'endpoint de consommation. L'endpoint applique sa propre limite ; rester ≥ 60 s.</description>
     </key>
+    <key name="last-login" type="u">
+      <default>0</default>
+      <summary>Timestamp du dernier login</summary>
+      <description>Mis à jour par prefs.js après un login réussi pour déclencher un refresh immédiat.</description>
+    </key>
   </schema>
 </schemalist>

@@ -120,6 +120,11 @@ class ClaudeUsageIndicator extends PanelMenu.Button {
         this.add_child(box);
 
         // --- Menu (détail) ---
+        this._loginItem = new PopupMenu.PopupMenuItem('⚠ Non connecté — Ouvrir les préférences');
+        this._loginItem.connect('activate', () => this._extension.openPreferences());
+        this._loginItem.hide();
+        this.menu.addMenuItem(this._loginItem);
+
         this._item5 = new PopupMenu.PopupMenuItem('5h : …', { reactive: false });
         this._item7 = new PopupMenu.PopupMenuItem('7j : …', { reactive: false });
         this.menu.addMenuItem(this._item5);
@@ -130,17 +135,15 @@ class ClaudeUsageIndicator extends PanelMenu.Button {
         refreshItem.connect('activate', () => this._refresh());
         this.menu.addMenuItem(refreshItem);
 
-        const loginItem = new PopupMenu.PopupMenuItem('Connexion / Préférences…');
-        loginItem.connect('activate', () => this._extension.openPreferences());
-        this.menu.addMenuItem(loginItem);
-
         const prefsItem = new PopupMenu.PopupMenuItem('Préférences…');
         prefsItem.connect('activate', () => this._extension.openPreferences());
         this.menu.addMenuItem(prefsItem);
 
         // Réagir aux changements de réglages (intervalle notamment)
-        this._settingsChangedId = this._settings.connect('changed::poll-interval',
-            () => this._scheduleTimer());
+        this._settingsChangedId = this._settings.connect('changed', (s, key) => {
+            if (key === 'poll-interval') this._scheduleTimer();
+            if (key === 'last-login') this._refresh();
+        });
 
         this._scheduleTimer();
         this._refresh();
@@ -209,7 +212,10 @@ class ClaudeUsageIndicator extends PanelMenu.Button {
                 return;
             }
             if (!data || !data.ok) {
-                this._onError();
+                if (data?.error === 'no_token')
+                    this._showNotConnected();
+                else
+                    this._onError();
                 return;
             }
             this._update(data);
@@ -224,11 +230,21 @@ class ClaudeUsageIndicator extends PanelMenu.Button {
             this._showUnavailable();
     }
 
+    _showNotConnected() {
+        this._bar5.setData(null, COLOR_DIM, null);
+        this._bar7.setData(null, COLOR_DIM, null);
+        this._item5.label.text = 'Non connecté';
+        this._item7.label.text = 'Ouvre les préférences pour te connecter';
+        this._loginItem.show();
+        this._notified = { five: 0, seven: 0 };
+    }
+
     _showUnavailable() {
         this._bar5.setData(null, COLOR_DIM, null);
         this._bar7.setData(null, COLOR_DIM, null);
         this._item5.label.text = '5h : indisponible';
         this._item7.label.text = '7j : indisponible';
+        this._loginItem.hide();
         this._notified = { five: 0, seven: 0 };
     }
 
@@ -240,6 +256,7 @@ class ClaudeUsageIndicator extends PanelMenu.Button {
         const target = sd.target_pct;
         const pacePos = sd.pace_pos;
 
+        this._loginItem.hide();
         this._bar5.setData(p5, this._colorFor(p5, fh.target_pct), fh.target_pct ?? null);
         this._bar7.setData(p7, this._colorFor(p7, target), target);
 
