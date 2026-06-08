@@ -192,6 +192,14 @@ export default class ClaudeUsagePrefs extends ExtensionPreferences {
         alertGroup.add(critRow);
         settings.bind('threshold-critical', critRow, 'value', Gio.SettingsBindFlags.DEFAULT);
 
+        const weekendRow = new Adw.SwitchRow({
+            title: _('Ignore weekends (7-day pace)'),
+            subtitle: _('Target only progresses on weekdays'),
+        });
+        alertGroup.add(weekendRow);
+        settings.bind('pace-skip-weekends', weekendRow, 'active',
+            Gio.SettingsBindFlags.DEFAULT);
+
         // --- Refresh ---
         const refreshGroup = new Adw.PreferencesGroup({ title: _('Refresh') });
         page.add(refreshGroup);

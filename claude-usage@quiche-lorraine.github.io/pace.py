@@ -5,6 +5,7 @@ Lit la réponse brute de l'API sur stdin, calcule la cadence cible 7j
 (port de ercp6/.claude/script/statusline.sh, lignes ~107-175) et imprime
 un JSON normalisé sur stdout. Ne lève jamais : en cas de souci -> {"ok": false}.
 """
+import os
 import sys
 import json
 import time
@@ -66,14 +67,35 @@ def working_days_until(start_ts, deadline_ts):
     return count
 
 
-def compute_pace(seven_pct, seven_reset, now):
+def working_seconds(start, end):
+    """Secondes situées hors samedi/dimanche entre start et end (heure locale)."""
+    if end <= start:
+        return 0.0
+    total = 0.0
+    cur = start
+    while cur < end:
+        dt = datetime.datetime.fromtimestamp(cur, TZ) if TZ else datetime.datetime.fromtimestamp(cur)
+        next_mid = (dt.replace(hour=0, minute=0, second=0, microsecond=0)
+                    + datetime.timedelta(days=1)).timestamp()
+        seg_end = min(next_mid, end)
+        if dt.weekday() not in (5, 6):  # 5=samedi, 6=dimanche
+            total += seg_end - cur
+        cur = seg_end
+    return total
+
+
+def compute_pace(seven_pct, seven_reset, now, skip_weekends=False):
     """Retourne (target_pct, pace_pos) ; pace_pos in 1..5, ou (None, None)."""
     if seven_pct is None or seven_reset is None:
         return None, None
 
     window_start = seven_reset - WEEK
     elapsed = now - window_start
-    expected = (elapsed / WEEK) * 100 if elapsed > 0 else 0.0
+    if skip_weekends:
+        total_work = working_seconds(window_start, seven_reset)
+        expected = (working_seconds(window_start, now) / total_work) * 100 if total_work > 0 else 0.0
+    else:
+        expected = (elapsed / WEEK) * 100 if elapsed > 0 else 0.0
     target_pct = max(0, min(100, round(expected)))
 
     pace_ratio = (seven_pct / expected) if expected > 2 else -1.0
@@ -137,7 +159,8 @@ def main():
     five_reset = to_epoch(fh.get("resets_at"))
     seven_reset = to_epoch(sd.get("resets_at"))
 
-    target_pct, pace_pos = compute_pace(seven_pct, seven_reset, now)
+    skip_weekends = os.environ.get("CLAUDE_TRAY_SKIP_WEEKEND") == "1"
+    target_pct, pace_pos = compute_pace(seven_pct, seven_reset, now, skip_weekends=skip_weekends)
 
     # Cible 5h : proportion linéaire du temps écoulé dans la fenêtre glissante.
     five_target = None

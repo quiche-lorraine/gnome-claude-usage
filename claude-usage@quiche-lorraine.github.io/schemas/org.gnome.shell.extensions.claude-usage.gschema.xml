@@ -19,6 +19,11 @@
       <summary>Seuil critique (%)</summary>
       <description>Pourcentage à partir duquel la jauge passe en rouge.</description>
     </key>
+    <key name="pace-skip-weekends" type="b">
+      <default>false</default>
+      <summary>Ignorer le week-end pour le rythme 7j</summary>
+      <description>La cible 7 jours ne progresse que les jours ouvrés (lun-ven) ; elle reste plate le week-end.</description>
+    </key>
     <key name="poll-interval" type="i">
       <range min="30" max="3600"/>
       <default>180</default>

@@ -173,9 +173,12 @@ class ClaudeUsageIndicator extends PanelMenu.Button {
         const script = GLib.build_filenamev([this._extension.path, 'usage-fetch.sh']);
         let proc;
         try {
-            proc = Gio.Subprocess.new(
-                ['bash', script],
-                Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE);
+            const launcher = new Gio.SubprocessLauncher({
+                flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE,
+            });
+            if (this._settings.get_boolean('pace-skip-weekends'))
+                launcher.setenv('CLAUDE_TRAY_SKIP_WEEKEND', '1', true);
+            proc = launcher.spawnv(['bash', script]);
         } catch (e) {
             logError(e, 'claude-usage: spawn failed');
             this._onError();
