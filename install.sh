@@ -13,6 +13,7 @@ command -v python3 >/dev/null 2>&1 || missing+=("python3")
 command -v curl    >/dev/null 2>&1 || missing+=("curl")
 command -v gnome-extensions >/dev/null 2>&1 || missing+=("gnome-extensions")
 command -v glib-compile-schemas >/dev/null 2>&1 || missing+=("glib-compile-schemas (paquet libglib2.0-bin)")
+command -v msgfmt             >/dev/null 2>&1 || missing+=("msgfmt (paquet gettext)")
 if [ "${#missing[@]}" -gt 0 ]; then
   echo "✗ Dépendances manquantes : ${missing[*]}" >&2
   echo "  Installez-les puis relancez (ex: sudo apt install python3 curl libglib2.0-bin)." >&2
@@ -36,6 +37,10 @@ chmod +x "$EXT_DIR/usage-fetch.sh" "$EXT_DIR/pace.py" \
 
 # --- Schéma GSettings ---
 glib-compile-schemas "$EXT_DIR/schemas"
+
+# --- Traductions ---
+mkdir -p "$EXT_DIR/locale/fr/LC_MESSAGES"
+msgfmt "$(dirname "${BASH_SOURCE[0]}")/po/fr.po" -o "$EXT_DIR/locale/fr/LC_MESSAGES/gnome-claude-usage.mo"
 
 # --- Activation ---
 # Un dossier fraîchement copié n'est pas encore "découvert" par GNOME Shell :

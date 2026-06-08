@@ -10,6 +10,8 @@ install:
 	@chmod +x "$(EXT_DIR)/usage-fetch.sh" "$(EXT_DIR)/pace.py" \
 	          "$(EXT_DIR)/resolve-token.py" "$(EXT_DIR)/oauth-login.py"
 	@glib-compile-schemas "$(EXT_DIR)/schemas"
+	@mkdir -p "$(EXT_DIR)/locale/fr/LC_MESSAGES"
+	@msgfmt po/fr.po -o "$(EXT_DIR)/locale/fr/LC_MESSAGES/gnome-claude-usage.mo"
 	@gnome-extensions enable $(UUID) 2>/dev/null || true
 	@gnome-extensions info $(UUID) 2>/dev/null | grep -q "Activé: Oui" || \
 	  python3 -c "import subprocess,ast; \

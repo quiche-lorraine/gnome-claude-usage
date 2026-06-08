@@ -7,27 +7,28 @@ import { ExtensionPreferences } from 'resource:///org/gnome/Shell/Extensions/js/
 
 export default class ClaudeUsagePrefs extends ExtensionPreferences {
     fillPreferencesWindow(window) {
+        const _ = this.gettext.bind(this);
         const settings = this.getSettings();
 
         const page = new Adw.PreferencesPage();
         window.add(page);
 
-        // --- Connexion Claude ---
-        const loginGroup = new Adw.PreferencesGroup({ title: 'Connexion Claude' });
+        // --- Claude Connection ---
+        const loginGroup = new Adw.PreferencesGroup({ title: _('Claude Connection') });
         page.add(loginGroup);
 
         const statusRow = new Adw.ActionRow({
-            title: 'Statut',
-            subtitle: this._connectionStatus(),
+            title: _('Status'),
+            subtitle: this._connectionStatus(_),
         });
         loginGroup.add(statusRow);
 
         const browserRow = new Adw.ActionRow({
-            title: 'Étape 1',
-            subtitle: 'Ouvre le navigateur pour autoriser l\'accès',
+            title: _('Step 1'),
+            subtitle: _('Open the browser to authorize access'),
         });
         const browserBtn = new Gtk.Button({
-            label: 'Ouvrir le navigateur',
+            label: _('Open browser'),
             valign: Gtk.Align.CENTER,
         });
         browserRow.add_suffix(browserBtn);
@@ -35,18 +36,18 @@ export default class ClaudeUsagePrefs extends ExtensionPreferences {
         loginGroup.add(browserRow);
 
         const codeEntry = new Adw.EntryRow({
-            title: 'Étape 2 — Colle le code ici',
+            title: _('Step 2 — Paste the code here'),
             show_apply_button: false,
             sensitive: false,
         });
         loginGroup.add(codeEntry);
 
         const validateRow = new Adw.ActionRow({
-            title: 'Étape 3',
-            subtitle: 'Valide le code pour obtenir le token',
+            title: _('Step 3'),
+            subtitle: _('Validate the code to get your token'),
         });
         const validateBtn = new Gtk.Button({
-            label: 'Valider le code',
+            label: _('Validate code'),
             valign: Gtk.Align.CENTER,
             sensitive: false,
             css_classes: ['suggested-action'],
@@ -65,10 +66,10 @@ export default class ClaudeUsagePrefs extends ExtensionPreferences {
         resultRow.add_suffix(resultLabel);
         loginGroup.add(resultRow);
 
-        // Ouvrir le navigateur
+        // Open browser
         browserBtn.connect('clicked', () => {
             browserBtn.set_sensitive(false);
-            resultLabel.set_label('Génération des paramètres…');
+            resultLabel.set_label(_('Generating parameters…'));
 
             const script = GLib.build_filenamev([this.path, 'oauth-login.py']);
             let proc;
@@ -84,46 +85,46 @@ export default class ClaudeUsagePrefs extends ExtensionPreferences {
             proc.communicate_utf8_async(null, null, (p, res) => {
                 let stdout = '';
                 try { [, stdout] = p.communicate_utf8_finish(res); } catch (e) {
-                    resultLabel.set_label('✗ Erreur subprocess');
+                    resultLabel.set_label(`✗ ${_('Subprocess error')}`);
                     browserBtn.set_sensitive(true);
                     return;
                 }
                 let data;
                 try { data = JSON.parse(stdout); } catch (e) {
-                    resultLabel.set_label('✗ Réponse invalide');
+                    resultLabel.set_label(`✗ ${_('Invalid response')}`);
                     browserBtn.set_sensitive(true);
                     return;
                 }
                 if (!data.ok) {
-                    resultLabel.set_label(`✗ ${data.error || 'Erreur inconnue'}`);
+                    resultLabel.set_label(`✗ ${data.error || _('Unknown error')}`);
                     browserBtn.set_sensitive(true);
                     return;
                 }
                 try {
                     Gio.AppInfo.launch_default_for_uri(data.url, null);
                 } catch (e) {
-                    resultLabel.set_label(`URL : ${data.url}`);
+                    resultLabel.set_label(`URL: ${data.url}`);
                 }
                 browserBtn.set_sensitive(true);
                 codeEntry.set_sensitive(true);
                 validateBtn.set_sensitive(true);
                 if (!resultLabel.get_label().startsWith('URL'))
-                    resultLabel.set_label('Navigateur ouvert — autorise, puis colle le code ci-dessus');
+                    resultLabel.set_label(_('Browser opened — authorize, then paste the code above'));
             });
         });
 
-        // Activer le bouton Valider quand du texte est saisi
+        // Enable Validate button when text is entered
         codeEntry.connect('notify::text', () => {
             validateBtn.set_sensitive(codeEntry.get_text().trim().length > 0);
         });
 
-        // Valider le code
+        // Validate the code
         validateBtn.connect('clicked', () => {
             const code = codeEntry.get_text().trim();
             if (!code) return;
 
             validateBtn.set_sensitive(false);
-            resultLabel.set_label('Échange du code en cours…');
+            resultLabel.set_label(_('Exchanging code…'));
 
             const script = GLib.build_filenamev([this.path, 'oauth-login.py']);
             let proc;
@@ -139,72 +140,72 @@ export default class ClaudeUsagePrefs extends ExtensionPreferences {
             proc.communicate_utf8_async(null, null, (p, res) => {
                 let stdout = '';
                 try { [, stdout] = p.communicate_utf8_finish(res); } catch (e) {
-                    resultLabel.set_label('✗ Erreur subprocess');
+                    resultLabel.set_label(`✗ ${_('Subprocess error')}`);
                     validateBtn.set_sensitive(true);
                     return;
                 }
                 let data;
                 try { data = JSON.parse(stdout); } catch (e) {
-                    resultLabel.set_label('✗ Réponse invalide');
+                    resultLabel.set_label(`✗ ${_('Invalid response')}`);
                     validateBtn.set_sensitive(true);
                     return;
                 }
                 if (data.ok) {
                     settings.set_uint('last-login', Math.floor(Date.now() / 1000));
-                    statusRow.set_subtitle('✓ Login dédié actif');
+                    statusRow.set_subtitle(_('✓ Dedicated login active'));
                     codeEntry.set_text('');
                     codeEntry.set_sensitive(false);
                     validateBtn.set_sensitive(false);
-                    resultLabel.set_label('✓ Connecté — les jauges se mettent à jour…');
+                    resultLabel.set_label(_('✓ Connected — gauges updating…'));
                 } else {
-                    resultLabel.set_label(`✗ ${data.error || 'Erreur inconnue'}`);
+                    resultLabel.set_label(`✗ ${data.error || _('Unknown error')}`);
                     validateBtn.set_sensitive(true);
                 }
             });
         });
 
-        // --- Alertes ---
-        const alertGroup = new Adw.PreferencesGroup({ title: 'Alertes' });
+        // --- Alerts ---
+        const alertGroup = new Adw.PreferencesGroup({ title: _('Alerts') });
         page.add(alertGroup);
 
         const notifRow = new Adw.SwitchRow({
-            title: 'Notifications',
-            subtitle: 'Notification GNOME au franchissement des seuils',
+            title: _('Notifications'),
+            subtitle: _('GNOME notification when thresholds are reached'),
         });
         alertGroup.add(notifRow);
         settings.bind('notifications-enabled', notifRow, 'active',
             Gio.SettingsBindFlags.DEFAULT);
 
         const warnRow = new Adw.SpinRow({
-            title: "Seuil d'avertissement (%)",
-            subtitle: 'Jauge orange à partir de ce niveau',
+            title: _('Warning threshold (%)'),
+            subtitle: _('Gauge turns orange above this level'),
             adjustment: new Gtk.Adjustment({ lower: 1, upper: 100, step_increment: 1 }),
         });
         alertGroup.add(warnRow);
         settings.bind('threshold-warn', warnRow, 'value', Gio.SettingsBindFlags.DEFAULT);
 
         const critRow = new Adw.SpinRow({
-            title: 'Seuil critique (%)',
-            subtitle: 'Jauge rouge à partir de ce niveau',
+            title: _('Critical threshold (%)'),
+            subtitle: _('Gauge turns red above this level'),
             adjustment: new Gtk.Adjustment({ lower: 1, upper: 100, step_increment: 1 }),
         });
         alertGroup.add(critRow);
         settings.bind('threshold-critical', critRow, 'value', Gio.SettingsBindFlags.DEFAULT);
 
-        // --- Rafraîchissement ---
-        const refreshGroup = new Adw.PreferencesGroup({ title: 'Rafraîchissement' });
+        // --- Refresh ---
+        const refreshGroup = new Adw.PreferencesGroup({ title: _('Refresh') });
         page.add(refreshGroup);
 
         const intervalRow = new Adw.SpinRow({
-            title: 'Intervalle (secondes)',
-            subtitle: "Fréquence d'interrogation du forfait",
+            title: _('Interval (seconds)'),
+            subtitle: _('How often to poll the quota endpoint'),
             adjustment: new Gtk.Adjustment({ lower: 30, upper: 3600, step_increment: 30 }),
         });
         refreshGroup.add(intervalRow);
         settings.bind('poll-interval', intervalRow, 'value', Gio.SettingsBindFlags.DEFAULT);
     }
 
-    _connectionStatus() {
+    _connectionStatus(_) {
         const ownPath = GLib.build_filenamev([
             GLib.get_user_config_dir(), 'gnome-claude-usage', 'credentials.json',
         ]);
@@ -212,9 +213,9 @@ export default class ClaudeUsagePrefs extends ExtensionPreferences {
             GLib.get_home_dir(), '.claude', '.credentials.json',
         ]);
         if (GLib.file_test(ownPath, GLib.FileTest.EXISTS))
-            return '✓ Login dédié actif';
+            return _('✓ Dedicated login active');
         if (GLib.file_test(cliPath, GLib.FileTest.EXISTS))
-            return 'Via Claude Code CLI (repli)';
-        return '✗ Non connecté — utilise les étapes ci-dessous';
+            return _('Via Claude Code CLI (fallback)');
+        return _('✗ Not connected — use the steps below');
     }
 }

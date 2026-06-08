@@ -1,0 +1,186 @@
+# French translation for gnome-claude-usage
+# Copyright (C) quiche-lorraine
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-claude-usage\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+# indicator.js — bar labels
+msgid "5h"
+msgstr "5h"
+
+msgid "7d"
+msgstr "7j"
+
+# indicator.js — menu items
+msgid "⚠ Not connected — Open preferences"
+msgstr "⚠ Non connecté — Ouvrir les préférences"
+
+msgid "5h: …"
+msgstr "5h : …"
+
+msgid "7d: …"
+msgstr "7j : …"
+
+msgid "Refresh now"
+msgstr "Actualiser maintenant"
+
+msgid "Preferences…"
+msgstr "Préférences…"
+
+# indicator.js — connection states
+msgid "Not connected"
+msgstr "Non connecté"
+
+msgid "Open preferences to connect"
+msgstr "Ouvre les préférences pour te connecter"
+
+msgid "5h: unavailable"
+msgstr "5h : indisponible"
+
+msgid "7d: unavailable"
+msgstr "7j : indisponible"
+
+# indicator.js — detail menu lines
+msgid "5h window:"
+msgstr "5h glissantes :"
+
+msgid "7-day window:"
+msgstr "7 jours :"
+
+msgid "target"
+msgstr "cible"
+
+# indicator.js — pace labels
+msgid "very slow"
+msgstr "très lent"
+
+msgid "slow"
+msgstr "lent"
+
+msgid "on track"
+msgstr "parfait"
+
+msgid "fast"
+msgstr "rapide"
+
+msgid "too fast"
+msgstr "trop rapide"
+
+# indicator.js — reset countdown
+msgid "resets in"
+msgstr "reset dans"
+
+# indicator.js — notifications
+msgid "Claude Quota"
+msgstr "Forfait Claude"
+
+msgid "5h window"
+msgstr "Fenêtre 5h"
+
+msgid "7-day window"
+msgstr "Fenêtre 7 jours"
+
+msgid "critical"
+msgstr "critique"
+
+msgid "high"
+msgstr "élevé"
+
+msgid "threshold"
+msgstr "seuil"
+
+# prefs.js — Claude Connection group
+msgid "Claude Connection"
+msgstr "Connexion Claude"
+
+msgid "Status"
+msgstr "Statut"
+
+msgid "Step 1"
+msgstr "Étape 1"
+
+msgid "Open the browser to authorize access"
+msgstr "Ouvre le navigateur pour autoriser l'accès"
+
+msgid "Open browser"
+msgstr "Ouvrir le navigateur"
+
+msgid "Step 2 — Paste the code here"
+msgstr "Étape 2 — Colle le code ici"
+
+msgid "Step 3"
+msgstr "Étape 3"
+
+msgid "Validate the code to get your token"
+msgstr "Valide le code pour obtenir le token"
+
+msgid "Validate code"
+msgstr "Valider le code"
+
+# prefs.js — status messages
+msgid "✓ Dedicated login active"
+msgstr "✓ Login dédié actif"
+
+msgid "Via Claude Code CLI (fallback)"
+msgstr "Via Claude Code CLI (repli)"
+
+msgid "✗ Not connected — use the steps below"
+msgstr "✗ Non connecté — utilise les étapes ci-dessous"
+
+# prefs.js — progress/result messages
+msgid "Generating parameters…"
+msgstr "Génération des paramètres…"
+
+msgid "Subprocess error"
+msgstr "Erreur subprocess"
+
+msgid "Invalid response"
+msgstr "Réponse invalide"
+
+msgid "Unknown error"
+msgstr "Erreur inconnue"
+
+msgid "Browser opened — authorize, then paste the code above"
+msgstr "Navigateur ouvert — autorise, puis colle le code ci-dessus"
+
+msgid "Exchanging code…"
+msgstr "Échange du code en cours…"
+
+msgid "✓ Connected — gauges updating…"
+msgstr "✓ Connecté — les jauges se mettent à jour…"
+
+# prefs.js — Alerts group
+msgid "Alerts"
+msgstr "Alertes"
+
+msgid "Notifications"
+msgstr "Notifications"
+
+msgid "GNOME notification when thresholds are reached"
+msgstr "Notification GNOME au franchissement des seuils"
+
+msgid "Warning threshold (%)"
+msgstr "Seuil d'avertissement (%)"
+
+msgid "Gauge turns orange above this level"
+msgstr "Jauge orange à partir de ce niveau"
+
+msgid "Critical threshold (%)"
+msgstr "Seuil critique (%)"
+
+msgid "Gauge turns red above this level"
+msgstr "Jauge rouge à partir de ce niveau"
+
+# prefs.js — Refresh group
+msgid "Refresh"
+msgstr "Rafraîchissement"
+
+msgid "Interval (seconds)"
+msgstr "Intervalle (secondes)"
+
+msgid "How often to poll the quota endpoint"
+msgstr "Fréquence d'interrogation du forfait"

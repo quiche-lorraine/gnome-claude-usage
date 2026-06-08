@@ -1,7 +1,10 @@
-# Schéma GSettings compilé (généré à l'installation)
+# GSettings compiled schema (generated at install time)
 **/schemas/gschemas.compiled
 
-# IDE / outils
+# Compiled translations
+**/locale/
+
+# IDE / tools
 .idea/
 .playwright-mcp/
 

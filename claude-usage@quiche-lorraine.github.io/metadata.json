@@ -1,7 +1,7 @@
 {
   "uuid": "claude-usage@quiche-lorraine.github.io",
   "name": "Claude Usage",
-  "description": "Jauges permanentes de consommation du forfait Claude (fenêtres 5h et 7 jours) avec cadence cible et alertes.",
+  "description": "Permanent Claude quota gauges in the GNOME top bar (5h and 7-day windows) with pacing target and alerts.",
   "version": 1,
   "shell-version": ["46", "47", "48"],
   "settings-schema": "org.gnome.shell.extensions.claude-usage",

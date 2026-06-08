@@ -5,7 +5,9 @@ import { ClaudeUsageIndicator } from './indicator.js';
 
 export default class ClaudeUsageExtension extends Extension {
     enable() {
-        this._indicator = new ClaudeUsageIndicator(this);
+        this.initTranslations();
+        const _ = this.gettext.bind(this);
+        this._indicator = new ClaudeUsageIndicator(this, _);
         Main.panel.addToStatusArea('claude-usage', this._indicator);
     }
 
