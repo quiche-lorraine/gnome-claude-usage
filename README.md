@@ -8,11 +8,15 @@ consommation du **forfait Claude** (abonnement Pro/Max) :
 - **détail au clic** : pourcentages exacts, heures de reset, indicateur de cadence ;
 - **alertes** : couleur (vert / orange / rouge) + notification GNOME aux seuils, **désactivables** dans les préférences.
 
-```
-┌──────────────────────────┐
-│ … 5h▕████▏ 7j▕█▏│marqueur ▾ │
-└──────────────────────────┘
-```
+![Jauges dans la barre](docs/jauges.png)
+
+<details><summary>Menu détail & Préférences</summary>
+
+![Menu détail](docs/menu.png)
+
+![Préférences](docs/prefs.png)
+
+</details>
 
 ## Prérequis
 
