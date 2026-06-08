@@ -5,5 +5,6 @@
   "version": 1,
   "shell-version": ["46", "47", "48"],
   "settings-schema": "org.gnome.shell.extensions.claude-usage",
+  "gettext-domain": "gnome-claude-usage",
   "url": "https://github.com/quiche-lorraine/gnome-claude-usage"
 }
